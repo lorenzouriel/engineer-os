@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
+    <img src="assets/logo.svg" alt="engineer-os logo" width="240">
+  </picture>
+</p>
+
 # engineer-os
 
 The software-engineering config for Claude Code. Self-contained: open Claude Code inside this folder (or copy `engineer-os/.claude/` into another repo) to get its agents, commands, KB, and skills.

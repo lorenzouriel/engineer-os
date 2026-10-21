@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="engineer-os">
+  <rect width="64" height="64" rx="14" fill="#1F242C"/>
+  <g fill="#E6E8EB">
+    <rect x="9.25" y="41.5" width="11" height="11" rx="2.5"/>
+    <rect x="20.75" y="31.5" width="11" height="11" rx="2.5"/>
+    <rect x="32.25" y="21.5" width="11" height="11" rx="2.5"/>
+  </g>
+  <rect x="43.75" y="11.5" width="11" height="11" rx="2.5" fill="#2DE2CF"/>
+</svg>
