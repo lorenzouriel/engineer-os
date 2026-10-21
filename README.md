@@ -1,6 +1,6 @@
-# engineer/
+# engineer-os
 
-master-claude / AgentSpec — the software-engineering config for Claude Code. Self-contained: open Claude Code inside this folder (or copy `engineer/.claude/` into another repo) to get its agents, commands, KB, and skills.
+The software-engineering config for Claude Code. Self-contained: open Claude Code inside this folder (or copy `engineer-os/.claude/` into another repo) to get its agents, commands, KB, and skills.
 
 ## What's here
 
@@ -40,9 +40,9 @@ Full command reference: [.claude/commands/README.md](.claude/commands/README.md)
 
 ## Deeper docs
 
-- [.claude/sdd/README.md](.claude/sdd/README.md) — AgentSpec architecture, phase details, agent-matching internals, extension guide
+- [.claude/sdd/README.md](.claude/sdd/README.md) — SDD architecture, phase details, agent-matching internals, extension guide
 - [.claude/sdd/architecture/](.claude/sdd/architecture/) — workflow contracts, ADRs
-- Repo-wide layout and plugin install: [../README.md](../README.md)
+- [CLAUDE.md](CLAUDE.md) — conventions for working on this config with Claude Code
 
 ## Adding to this config
 
