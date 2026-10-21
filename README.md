@@ -7,6 +7,8 @@
 
 # engineer-os
 
+**The operating system for AI-assisted engineering.**
+
 The software-engineering config for Claude Code. Self-contained: open Claude Code inside this folder (or copy `engineer-os/.claude/` into another repo) to get its agents, commands, KB, and skills.
 
 ## What's here
