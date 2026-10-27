@@ -21,7 +21,7 @@ Before adding anything, decide the layer with the `component-model` skill. Then 
 
 Phases are wired together in `.claude/sdd/architecture/WORKFLOW_CONTRACTS.yaml`. Each phase is a `/workflow:*` command → a workflow agent (`.claude/agents/workflow/`) → an `sdd-*` skill that holds the method:
 
-`brainstorm` (optional) → `define` (Clarity Score ≥ 12/15) → `design` → `build` → `ship`, plus `iterate` for mid-stream changes. `breakdown`, `board`, `validate`, and `create-pr` support the build stage.
+`brainstorm` (optional) → `define` (Clarity Score ≥ 12/15) → `design` → `build` → `security-audit` (optional) → `ship`, plus `iterate` for mid-stream changes. `breakdown`, `board`, `validate`, and `create-pr` support the build stage. `security-audit` has no workflow agent: it runs in the main session because it launches parallel subagents, and `/ship` blocks on its `BLOCKED` verdict when its report exists.
 
 - Phase documents are generated from `.claude/sdd/templates/*_TEMPLATE.md` into `.claude/sdd/features/` (active). Build reports go to `.claude/sdd/reports/`, and shipped features to `.claude/sdd/archive/`.
 - Design matches files to agents by globbing `.claude/agents/**`, so a new agent file is picked up without registration.
@@ -40,6 +40,19 @@ Phases are wired together in `.claude/sdd/architecture/WORKFLOW_CONTRACTS.yaml`.
 - **Skill frontmatter.** Only `name`, `description`, and optionally `license`, `allowed-tools`, `metadata`, `compatibility` are allowed. `name` must equal the folder name and be kebab-case with at least one hyphen. Write multi-line descriptions as a literal block (`|`). The description is the trigger, so there is no `triggers:` key.
 - **Counts are duplicated.** Agent, command, skill, and KB counts appear in `README.md`, `.claude/agents/README.md` (hand-maintained catalog: categories, tiers, escalation map), the `agent-router` skill, and `.claude/kb/_index.yaml`. Update all of them together.
 
+## Plugin build
+
+The repo is also a plugin marketplace: `.claude-plugin/marketplace.json` lists one plugin, `engineer-os`, whose source is `plugin/`. `plugin/` is generated, never edited by hand:
+
+```
+python scripts/build-plugin.py          # rebuild plugin/ from .claude/
+python scripts/build-plugin.py --check  # exit 1 if plugin/ is stale
+```
+
+The build copies `.claude/` and rewrites plugin-internal references (`.claude/agents|commands|skills|kb/...`, `.claude/sdd/templates|architecture/...`) to `${CLAUDE_PLUGIN_ROOT}/...` in markdown and YAML bodies. It leaves SDD workspace paths (`.claude/sdd/features|reports|board|archive`) and `.claude/storage` project-relative, and drops `settings.json`, `storage/`, the SDD workspace folders, `agents/_template.md`, and README files under `agents/` and `commands/`. After any change under `.claude/`, rebuild and commit `plugin/` in the same commit. Validate with `claude plugin validate ./plugin` and `claude plugin validate .`.
+
+The manifest omits `version` on purpose, so installs track git commits. Never change the plugin `name` (`engineer-os`): installs are recorded by name.
+
 ## Upstream references that don't exist here
 
-This config was extracted from the upstream `lorenzouriel/master-claude` repo, which is still the repository URL in `.claude/.claude-plugin/plugin.json` and the default source of `.claude/skills/sync-stack/scripts/sync.py`. Several skills (`create-skill`, `create-agent`) and SDD docs still describe that repo's tooling: `build-plugin.sh`, the `plugin/` mirror, `scripts/generate-agent-router.py`, `CHANGELOG.md`, and `docs/`. None of those exist in engineer-os. Skip those checklist steps rather than creating the files, unless asked.
+This config was extracted from the upstream `lorenzouriel/master-claude` repo, still the default source of `.claude/skills/sync-stack/scripts/sync.py`. Several skills (`create-skill`, `create-agent`) and SDD docs still describe that repo's tooling: `build-plugin.sh` (here it is `scripts/build-plugin.py`), `plugin-extras/`, `scripts/generate-agent-router.py`, `CHANGELOG.md`, and `docs/`. Apart from the build script, none of those exist in engineer-os. Skip those checklist steps rather than creating the files, unless asked.

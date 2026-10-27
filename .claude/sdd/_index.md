@@ -56,6 +56,7 @@ BRAINSTORM_*.md
 | `/create-pr` | -- | Create pull request | -- |
 | `/workflow:breakdown` | 2.5 | Decompose design into board task files | -- |
 | `/workflow:board` | 2.5-4 | Show/drive the task board (`next`, `move`, `check`, `html`) | `sdd-board` |
+| `/workflow:security-audit` | 3.5 | Multi-agent security audit of the built feature; `/ship` honors a BLOCKED verdict | `sdd-security-audit` |
 
 ### Data Engineering (8)
 
@@ -92,6 +93,7 @@ BRAINSTORM_*.md
 | `DESIGN_{FEATURE}.md` | 2 | `.claude/sdd/features/` |
 | `S{NN}-{slug}.md` (task) | 2.5 | `.claude/sdd/board/{FEATURE}/` |
 | `BUILD_REPORT_{FEATURE}.md` | 3 | `.claude/sdd/reports/` |
+| `SECURITY_AUDIT_{FEATURE}.md` | 3.5 | `.claude/sdd/reports/` (full run artifacts stay outside the repo) |
 | `SHIPPED_{DATE}.md` | 4 | `.claude/sdd/archive/{FEATURE}/` |
 
 ---
@@ -156,8 +158,9 @@ BRAINSTORM_*.md
 |   +-- {FEATURE}/
 |       +-- S{NN}-{slug}.md      # one task per story: status, depends_on, agent
 |       +-- _log.md              # audit trail of status moves
-+-- reports/                     # Build reports
++-- reports/                     # Build and security audit reports
 |   +-- BUILD_REPORT_{FEATURE}.md
+|   +-- SECURITY_AUDIT_{FEATURE}.md  (if Phase 3.5 was used)
 +-- archive/                     # Shipped features
 |   +-- {FEATURE}/
 |       +-- BRAINSTORM_{FEATURE}.md  (if used)
@@ -171,6 +174,7 @@ BRAINSTORM_*.md
 |   +-- DEFINE_TEMPLATE.md
 |   +-- DESIGN_TEMPLATE.md
 |   +-- BUILD_REPORT_TEMPLATE.md
+|   +-- SECURITY_AUDIT_TEMPLATE.md
 |   +-- SHIPPED_TEMPLATE.md
 +-- architecture/                # Workflow contracts
     +-- WORKFLOW_CONTRACTS.yaml

@@ -1,6 +1,6 @@
 # AgentSpec Commands
 
-**31 slash commands** for the SDD workflow, data engineering, visualization, and developer productivity.
+**38 slash commands** for the SDD workflow, data engineering, visualization, and developer productivity.
 
 ## Workflow Commands (7)
 
@@ -10,6 +10,7 @@
 | `/define` | 1 | Capture requirements |
 | `/design` | 2 | Create architecture |
 | `/build` | 3 | Execute implementation |
+| `/workflow:security-audit` | 3.5 | Security audit of the built feature (optional ship gate) |
 | `/ship` | 4 | Archive completed feature |
 | `/iterate` | Any | Update documents mid-stream |
 | `/create-pr` | Any | Create pull request |

@@ -29,7 +29,7 @@ You are the Spec-Driven Development workflow assistant. Help users navigate the 
 - User has requirements → Suggest `/agentspec:define` to structure them
 - User has a DEFINE doc → Suggest `/agentspec:design` to create architecture
 - User has a DESIGN doc → Suggest `/agentspec:build` to implement
-- User completed building → Suggest `/agentspec:ship` to archive
+- User completed building → Suggest `/agentspec:ship` to archive; for a security-sensitive feature, offer `/workflow:security-audit` first
 
 ## Workflow Rules
 
@@ -52,6 +52,7 @@ Each phase's methodology lives in a dedicated skill; the phase agent and command
 | 4 Ship | `sdd-ship` |
 | Cross-phase | `sdd-iterate` |
 | Task board (between Design and Build) | `sdd-board` |
+| 3.5 Security audit (optional, between Build and Ship) | `sdd-security-audit` |
 
 The layering itself (agents execute, skills teach how, commands are entrypoints, KBs are source-of-truth) is defined in `.claude/kb/shared/component-model.md`.
 

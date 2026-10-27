@@ -3,7 +3,7 @@
 # Version: 3.5.0
 # Date: 2026-07-15
 
-version: "3.5.0"
+version: "3.6.0"
 name: "AgentSpec"
 description: "5-phase spec-driven development workflow with agent orchestration for software and data engineering"
 
@@ -75,6 +75,14 @@ workflow:
       task_file: ".claude/sdd/board/{FEATURE}/S{NN}-{slug}.md"
       statuses: ["backlog", "ready", "in-progress", "review", "done", "blocked"]
       tooling: ".claude/skills/sdd-board/board.py (stdlib Python 3.7+)"
+
+    - name: "Security Audit"
+      number: 3.5
+      command: "/workflow:security-audit"
+      skill: "sdd-security-audit"
+      purpose: "Optional multi-agent security audit of the built feature before Ship; /ship honors its verdict when the report exists"
+      position: "after Build, before Ship"
+      output: "SECURITY_AUDIT_{FEATURE}.md"
 
   # Agent model/tools live in each agent's frontmatter (authoritative, mirrored in
   # routing.json). They were previously duplicated here and in the phase blocks and
@@ -542,13 +550,75 @@ ship:
     - "DEFINE_{FEATURE}.md"
     - "DESIGN_{FEATURE}.md"
     - "BUILD_REPORT_{FEATURE}.md"
+    - "SECURITY_AUDIT_{FEATURE}.md"  # Optional - if Phase 3.5 was used
     - "SHIPPED_{DATE}.md"
+
+  input_optional:
+    - ".claude/sdd/reports/SECURITY_AUDIT_{FEATURE}.md"
 
   pre_ship_checklist:
     - build_report_complete
     - all_tests_passing
     - no_blocking_issues
     - acceptance_tests_verified
+    - security_audit_not_blocked  # only when SECURITY_AUDIT_{FEATURE}.md exists
+
+# =============================================================================
+# PHASE 3.5: SECURITY AUDIT (Optional)
+# =============================================================================
+
+security_audit:
+  command:
+    name: "/workflow:security-audit"
+    file: ".claude/commands/workflow/security-audit.md"
+    args: "<feature-name|design-file> [--profile quick|standard|deep] [--budget N] [--full] [--output <dir>]"
+    examples:
+      - "/workflow:security-audit USER_AUTH"
+      - "/workflow:security-audit .claude/sdd/features/DESIGN_DATA_EXPORT.md --profile quick"
+
+  agent:
+    name: null
+    note: "No workflow agent: the main session is the audit parent because it must launch parallel subagents, which a subagent cannot do"
+
+  skill:
+    name: "sdd-security-audit"
+    file: ".claude/skills/sdd-security-audit/SKILL.md"
+    owns: "Methodology adapted from cloudflare/security-audit-skill — reconnaissance, coverage ledger, hunting waves, independent validation, findings schema and validators, reporting; plus SDD scope, verdict, and routing"
+
+  input:
+    required:
+      - ".claude/sdd/features/DESIGN_{FEATURE}.md"
+      - ".claude/sdd/reports/BUILD_REPORT_{FEATURE}.md"
+    optional:
+      - ".claude/sdd/features/DEFINE_{FEATURE}.md"
+      - ".claude/sdd/board/{FEATURE}/S*.md"
+
+  output:
+    file: ".claude/sdd/reports/SECURITY_AUDIT_{FEATURE}.md"
+    template: ".claude/sdd/templates/SECURITY_AUDIT_TEMPLATE.md"
+    run_directory: "~/security-audit-skill/<repo-name>/run-<N>/ (outside the repo; holds findings.json, coverage-ledger.json, REPORT.md, FINDINGS-DETAIL.md, NEEDS-VALIDATION.md)"
+    status_values:
+      - "BLOCKED"
+      - "PASS WITH FINDINGS"
+      - "CLEAR"
+      - "INCOMPLETE"
+
+  defaults:
+    scope: "feature footprint: DESIGN file manifest + board touched files + branch diff"
+    profile: "standard"
+
+  quality_gate:
+    findings_validator_passes: true      # scripts/validate-findings.cjs (POSIX Node; else run is INCOMPLETE)
+    ledger_validator_passes: true        # scripts/validate-coverage-ledger.cjs
+    confirmed_records_independently_verified: true
+    no_severity_on_needs_validation: true
+    sdd_report_target_neutral: true
+
+  ship_effect:
+    BLOCKED: "blocks /ship — any confirmed critical or high"
+    "PASS WITH FINDINGS": "ship with notes; user decides"
+    CLEAR: "ship allowed"
+    INCOMPLETE: "ship asks the user; never treated as CLEAR"
 
 # =============================================================================
 # CROSS-PHASE: ITERATE
@@ -611,6 +681,7 @@ folder_structure:
       path: "reports/"
       contains:
         - "BUILD_REPORT_*.md"
+        - "SECURITY_AUDIT_*.md"
 
     archive:
       path: "archive/"
@@ -628,6 +699,7 @@ folder_structure:
         - "DEFINE_TEMPLATE.md"
         - "DESIGN_TEMPLATE.md"
         - "BUILD_REPORT_TEMPLATE.md"
+        - "SECURITY_AUDIT_TEMPLATE.md"
         - "SHIPPED_TEMPLATE.md"
 
     architecture:
@@ -653,6 +725,7 @@ naming:
     define: "DEFINE_{FEATURE}.md"
     design: "DESIGN_{FEATURE}.md"
     build_report: "BUILD_REPORT_{FEATURE}.md"
+    security_audit: "SECURITY_AUDIT_{FEATURE}.md"
     shipped: "SHIPPED_{YYYY-MM-DD}.md"
 
   date_format: "YYYY-MM-DD"
@@ -785,6 +858,12 @@ quality:
 # =============================================================================
 
 version_history:
+  - version: "3.6.0"
+    date: "2026-10-26"
+    changes:
+      - "Added optional Phase 3.5 Security Audit (/workflow:security-audit, skill sdd-security-audit) adapted from cloudflare/security-audit-skill (MIT): scoped multi-agent audit of the built feature, full artifacts outside the repo, SECURITY_AUDIT_{FEATURE}.md gate report"
+      - "Ship reads SECURITY_AUDIT_{FEATURE}.md when present: BLOCKED stops the ship, INCOMPLETE asks the user; the report is archived with the feature"
+
   - version: "3.5.0"
     date: "2026-07-15"
     changes:

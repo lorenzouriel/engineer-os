@@ -1,13 +1,13 @@
 {
-  "name": "engineer",
-  "displayName": "engineer (master-claude / AgentSpec)",
-  "version": "1.0.0",
-  "description": "Software-engineering config: domain sub-agents, 5-phase spec-driven-development workflow, data-engineering knowledge base, diagramming and code-review skills.",
+  "name": "engineer-os",
+  "displayName": "engineer-os",
+  "description": "The operating system for AI-assisted engineering: domain sub-agents, a spec-driven development workflow (brainstorm, define, design, build, security audit, ship), a data-engineering knowledge base, and diagramming, review, and authoring skills.",
   "author": {
     "name": "Lorenzo Uriel",
     "email": "lorenzouriel394@gmail.com"
   },
-  "repository": "https://github.com/lorenzouriel/master-claude",
+  "homepage": "https://github.com/lorenzouriel/engineer-os",
+  "repository": "https://github.com/lorenzouriel/engineer-os",
   "license": "MIT",
-  "keywords": ["data-engineering", "sdd", "spark", "dbt", "airflow", "agents"]
+  "keywords": ["sdd", "spec-driven-development", "agents", "data-engineering", "security-audit", "dbt", "spark", "airflow"]
 }

@@ -16,7 +16,7 @@ Ship closes the 5-phase SDD workflow: it turns a completed feature's working doc
 | Aspect | Value |
 |--------|-------|
 | **Input (required)** | `.claude/sdd/features/DEFINE_{FEATURE}.md` · `.claude/sdd/features/DESIGN_{FEATURE}.md` · `.claude/sdd/reports/BUILD_REPORT_{FEATURE}.md` |
-| **Input (optional)** | `.claude/sdd/features/BRAINSTORM_{FEATURE}.md` (if Phase 0 was used) |
+| **Input (optional)** | `.claude/sdd/features/BRAINSTORM_{FEATURE}.md` (if Phase 0 was used) · `.claude/sdd/reports/SECURITY_AUDIT_{FEATURE}.md` (if Phase 3.5 was used) |
 | **Output** | `.claude/sdd/archive/{FEATURE}/` containing all artifacts + `SHIPPED_{DATE}.md` |
 | **Template** | `.claude/sdd/templates/SHIPPED_TEMPLATE.md` — the SHIPPED document's required shape; follow it, never improvise the format |
 | **Contract source** | `.claude/sdd/architecture/WORKFLOW_CONTRACTS.yaml` (`ship:`, `status_transitions:`, `folder_structure:`, `naming:`) |
@@ -66,6 +66,9 @@ Any of these blocks the ship — stop and route back to `/build`:
 - Tests are failing
 - Blocking issues documented in the build report
 - Missing required artifacts (DEFINE, DESIGN, BUILD_REPORT)
+- `SECURITY_AUDIT_{FEATURE}.md` exists with status `BLOCKED` (a confirmed critical/high finding) — route per its Route column, then re-run `/workflow:security-audit`
+
+A security audit is optional; its absence never blocks. When the report exists: `PASS WITH FINDINGS` ships with its open records listed under Recommendations in the SHIPPED document, and `INCOMPLETE` requires the user's explicit go-ahead — never treat it as clear.
 
 Ship only when all acceptance tests from DEFINE pass, the build report shows 100% completion, and no blocking issues remain.
 
@@ -113,14 +116,21 @@ If Phase 0 was used, also archive the brainstorm:
 cp .claude/sdd/features/BRAINSTORM_{FEATURE}.md .claude/sdd/archive/{FEATURE}/
 ```
 
+If Phase 3.5 was used, also archive the security audit report:
+
+```bash
+cp .claude/sdd/reports/SECURITY_AUDIT_{FEATURE}.md .claude/sdd/archive/{FEATURE}/
+```
+
 Resulting archive structure:
 
 ```text
 .claude/sdd/archive/{FEATURE}/
-├── BRAINSTORM_{FEATURE}.md  (if exists)
+├── BRAINSTORM_{FEATURE}.md      (if exists)
 ├── DEFINE_{FEATURE}.md
 ├── DESIGN_{FEATURE}.md
 ├── BUILD_REPORT_{FEATURE}.md
+├── SECURITY_AUDIT_{FEATURE}.md  (if exists)
 └── SHIPPED_{DATE}.md
 ```
 
@@ -169,6 +179,8 @@ If a BRAINSTORM was archived in Step 3, remove its working copy too:
 rm .claude/sdd/features/BRAINSTORM_{FEATURE}.md
 ```
 
+Likewise for an archived security audit report: `rm .claude/sdd/reports/SECURITY_AUDIT_{FEATURE}.md`.
+
 ### Step 7 — Save SHIPPED document
 
 ```markdown
@@ -216,6 +228,7 @@ PRE-FLIGHT CHECK
 ├─ [ ] All tests passing
 ├─ [ ] Acceptance tests from DEFINE verified
 ├─ [ ] No blocking issues in the build report
+├─ [ ] Security audit (if run) not BLOCKED; INCOMPLETE confirmed by the user
 ├─ [ ] Code deployed (if applicable)
 ├─ [ ] Archive directory created
 ├─ [ ] All artifacts copied to archive
