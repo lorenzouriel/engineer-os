@@ -9,7 +9,16 @@
 
 **The operating system for AI-assisted engineering.**
 
-The software-engineering config for Claude Code. Self-contained: open Claude Code inside this folder (or copy `engineer-os/.claude/` into another repo) to get its agents, commands, KB, and skills.
+The software-engineering config for Claude Code. Install it as a plugin, or open Claude Code inside this folder (or copy `engineer-os/.claude/` into another repo) to get its agents, commands, KB, and skills.
+
+## Install as a plugin
+
+```bash
+claude plugin marketplace add lorenzouriel/engineer-os
+claude plugin install engineer-os@engineer-os
+```
+
+Installed this way, every component is namespaced under the plugin, so commands run as `/engineer-os:<group>:<name>` (for example `/engineer-os:workflow:define`).
 
 ## What's here
 
@@ -59,3 +68,4 @@ Full command reference: [.claude/commands/README.md](.claude/commands/README.md)
 - New agent → `.claude/agents/{category}/{name}.md`, standard frontmatter (role, model, capabilities); auto-discovered by Design.
 - New KB domain → `/create-kb "name"` or manually under `.claude/kb/{domain}/`, then register in `.claude/kb/_index.yaml`.
 - New skill or command → see `create-skill` skill and [.claude/commands/README.md](.claude/commands/README.md) for conventions.
+- After any change under `.claude/`, run `python scripts/build-plugin.py` and commit the regenerated `plugin/` with it. `python scripts/build-plugin.py --check` fails when `plugin/` is stale.

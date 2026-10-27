@@ -1,6 +1,6 @@
 ---
 description: Validate stories against brainstorm/define/design (pre-build) or validate the built code against the stories (post-build). Produces a verdict report — never edits code or stories.
-argument-hint: [feature-name] [--mode spec|build|auto]
+argument-hint: "[feature-name] [--mode spec|build|auto]"
 allowed-tools: Read, Grep, Glob, Bash(git log:*), Bash(git diff:*), Bash(git show:*), Bash(npm test:*), Bash(npx vitest:*)
 ---
 

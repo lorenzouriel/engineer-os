@@ -1,6 +1,6 @@
 ---
 description: Decompose an approved feature (brainstorm + define + design) into implementation-ready stories with Description, Actual Plan, Architecture, and Acceptance Criteria
-argument-hint: [feature-name]
+argument-hint: "[feature-name]"
 allowed-tools: Read, Write, Grep, Glob, Bash(git log:*), Bash(git diff:*), Bash(python .claude/skills/sdd-board/board.py:*)
 ---
 

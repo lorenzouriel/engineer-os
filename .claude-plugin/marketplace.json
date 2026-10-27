@@ -1,0 +1,17 @@
+{
+  "name": "engineer-os",
+  "description": "engineer-os: the operating system for AI-assisted engineering, as a Claude Code plugin.",
+  "owner": {
+    "name": "Lorenzo Uriel",
+    "email": "lorenzouriel394@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "engineer-os",
+      "source": "./plugin",
+      "description": "Domain sub-agents, the SDD workflow (brainstorm, define, design, build, security audit, ship), a data-engineering knowledge base, and diagramming, review, and authoring skills.",
+      "category": "engineering",
+      "tags": ["sdd", "agents", "data-engineering", "security-audit", "code-review"]
+    }
+  ]
+}
