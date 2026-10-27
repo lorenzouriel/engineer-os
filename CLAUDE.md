@@ -21,7 +21,7 @@ Before adding anything, decide the layer with the `component-model` skill. Then 
 
 Phases are wired together in `.claude/sdd/architecture/WORKFLOW_CONTRACTS.yaml`. Each phase is a `/workflow:*` command → a workflow agent (`.claude/agents/workflow/`) → an `sdd-*` skill that holds the method:
 
-`brainstorm` (optional) → `define` (Clarity Score ≥ 12/15) → `design` → `build` → `ship`, plus `iterate` for mid-stream changes. `breakdown`, `board`, `validate`, and `create-pr` support the build stage.
+`brainstorm` (optional) → `define` (Clarity Score ≥ 12/15) → `design` → `build` → `security-audit` (optional) → `ship`, plus `iterate` for mid-stream changes. `breakdown`, `board`, `validate`, and `create-pr` support the build stage. `security-audit` has no workflow agent: it runs in the main session because it launches parallel subagents, and `/ship` blocks on its `BLOCKED` verdict when its report exists.
 
 - Phase documents are generated from `.claude/sdd/templates/*_TEMPLATE.md` into `.claude/sdd/features/` (active). Build reports go to `.claude/sdd/reports/`, and shipped features to `.claude/sdd/archive/`.
 - Design matches files to agents by globbing `.claude/agents/**`, so a new agent file is picked up without registration.

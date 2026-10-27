@@ -9,7 +9,8 @@ description: |
   vulnerabilities, threat-model a feature or architecture, audit authentication or
   authorization, check dependency or supply-chain posture, assess an LLM/RAG/agent
   system's security, or verify SLSA compliance. Do not use for the built-in
-  /security-review of a pending branch diff, for incident response or exploit
+  /security-review of a pending branch diff, for a full multi-agent audit of a
+  built SDD feature or whole codebase (that is sdd-security-audit), for incident response or exploit
   development, or for cloud-provider IAM or Fabric governance work — that is
   fabric-security-specialist and the cloud agents.
 ---
